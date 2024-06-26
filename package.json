@@ -1,0 +1,21 @@
+{
+  "name": "network-checker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/node": "^20.14.9",
+    "axios": "^1.7.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  }
+}
