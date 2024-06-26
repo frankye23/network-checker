@@ -3,14 +3,18 @@ import axios from 'axios';
 class URLChecker {
   private urls: string[];
   private interval: number;
+  private intervalId: NodeJS.Timeout | null = null;
+  private onStatusChange: (status: boolean) => void;
 
-  constructor(urls?: string[], interval: number = 60000) {
+  constructor(onStatusChange: (status: boolean) => void, urls?: string[], interval: number = 3000) {
     this.urls = urls || [
       'https://www.google.com',
       'https://www.baidu.com',
       'https://www.github.com'
     ];
     this.interval = interval;
+    this.onStatusChange = onStatusChange;
+    this.startChecking();
   }
 
   private async checkURL(url: string): Promise<boolean> {
@@ -22,19 +26,27 @@ class URLChecker {
     }
   }
 
-  public async checkURLs(): Promise<boolean> {
+  private async checkURLs(): Promise<void> {
     for (const url of this.urls) {
       if (await this.checkURL(url)) {
-        return true;
+        this.onStatusChange(true);
+        return;
       }
     }
-    return false;
+    this.onStatusChange(false);
   }
 
-  public startChecking(): void {
+  private startChecking(): void {
     this.checkURLs();
-    setInterval(() => this.checkURLs(), this.interval);
+    this.intervalId = setInterval(() => this.checkURLs(), this.interval);
+  }
+
+  public stopChecking(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
   }
 }
 
-export default URLChecker
+export default URLChecker;
